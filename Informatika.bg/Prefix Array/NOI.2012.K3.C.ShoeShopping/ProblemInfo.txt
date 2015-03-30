@@ -1,0 +1,6 @@
+Name: ShoeShopping
+Source: NOI 2012, R2, Group C
+Author: Alexander Georgiev
+Statement: ShoeShopping.pdf
+Archive: NOI.2012.R3.C.ShoeShopping.rar
+Tags: Medium, Prefix Array, Binary Search

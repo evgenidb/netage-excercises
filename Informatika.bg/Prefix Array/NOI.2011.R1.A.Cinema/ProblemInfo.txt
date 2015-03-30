@@ -1,0 +1,6 @@
+Name: Cinema
+Source: NOI 2011 R1, Group A
+Author: Alexander Georgiev
+Statement: Cinema.pdf
+Archive: NOI.2011.R1.A.Cinema.rar
+Tags: Easy, Prefix Array

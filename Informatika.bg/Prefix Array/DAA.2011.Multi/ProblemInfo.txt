@@ -1,0 +1,6 @@
+Name: Multi
+Source: DAA 2011
+Author: Alexander Georgiev
+Statement: Multi.pdf
+Archive: DAA.2011.Multi.rar
+Tags: Medium, Prefix Array
