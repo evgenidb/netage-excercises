@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    h1= title
+    // ADD USER
+    form#formAddUser(name="addUser", method="post")
+        input#inputUserId(type='text', placeholder='Id', name="user_id")
+        input#inputUserName(type='text', placeholder='Name', name="user_name")
+        br
+        button#btnAddUser(type="submit") Add User
+    // /ADD USER
