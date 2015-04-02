@@ -3,7 +3,7 @@ extends layout
 block content
     h1= title
     // DELETE USER
-    form#formAddUser(name="deleteUser", method="post")
+    form#formDeleteUser(name="deleteUser", method="post")
         input#inputUserId(type='text', placeholder='Id', name="user_id")
         br
         button#btnAddUser(type="submit") Delete User

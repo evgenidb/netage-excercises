@@ -1,0 +1,26 @@
+mixin display_menu(menu, base_url)
+    if !base_url
+        -base_url= ''
+
+    ul
+        each item, key in menu
+            li
+                -var url = base_url + '/' + key
+                if item.submenu
+                    span= item.name
+                    +display_menu(item.submenu, url)
+                else
+                    a(href= url)= item.name
+
+
+nav
+    -var menu_object = {}
+    -menu_object.hello = {name: 'Hello'}
+    -menu_object.user = {name: 'User'}
+    -menu_object.user.submenu = {}
+    -menu_object.user.submenu.all = {name: 'List All'}
+    -menu_object.user.submenu.create = {name: 'Add'}
+    -menu_object.user.submenu.delete = {name: 'Delete'}
+    -menu_object.user.submenu.clear = {name: 'Delete All'}
+
+    +display_menu(menu_object)

@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    h1= title
+    // CLEAR USERS
+    form#formClearUsers(name="clearUsers", method="post")
+        p Note: This operation is Irreversable!
+        br
+        button#btnAddUser(type="submit") Delete All Users
+    // /CLEAR USER

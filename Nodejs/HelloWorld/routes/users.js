@@ -96,7 +96,10 @@ router
 
 /* GET users listing. */
 router
-    .get('/clear', function(req, res, next) {
+    .get('/clear', function(req, res, next){
+        res.render('user-clear', { title: 'Delete All users'} )
+    })
+    .post('/clear', function(req, res, next) {
         // Callbacks
         var onError = function(err) {
             res.locals.path = req.getRestUrl();
