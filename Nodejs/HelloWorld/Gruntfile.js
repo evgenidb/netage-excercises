@@ -75,7 +75,23 @@ module.exports = function(grunt) {
             }
         },
         jshint: {
-            all: [ '**/*.js', '!**/node_modules/**' ],
+            options: {
+//                reporter: 'jslint',
+//                reporter: 'checkstyle',
+                reporter: require('jshint-stylish'),
+            },
+            all: [
+                'jshint:jsApp',
+                'jshint:jsFrontEnd',
+                'jshint:tests',
+                '!**/node_modules/**',
+            ],
+            tests: {
+                options: {
+                    '-W033': true,
+                },
+                src: ['test/**/*.js'],
+            },
             jsApp: [ '**/*.js', '!**/node_modules/**', '!**/public/**' ],
             jsFrontEnd: [ '**/public/javascripts/**/*.js' ],
             afterconcat: [ 'public/build/js/**/*.js' ]
@@ -143,9 +159,12 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
+
     grunt.loadNpmTasks('grunt-jsonlint');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-csslint');
+
+    grunt.loadNpmTasks('grunt-mocha-cli');
 
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-express-server');
@@ -195,4 +214,4 @@ module.exports = function(grunt) {
         'uglify',
         'express:prod',
     ]);
-}
+};

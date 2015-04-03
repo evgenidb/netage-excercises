@@ -1,4 +1,4 @@
-var setup = require('setup-server');
+var setup = require('./setup-server');
 
 var options = {
     dbProtocol: '',

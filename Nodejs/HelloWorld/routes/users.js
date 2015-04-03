@@ -97,7 +97,7 @@ router
 /* GET users listing. */
 router
     .get('/clear', function(req, res, next){
-        res.render('user-clear', { title: 'Delete All users'} )
+        res.render('user-clear', { title: 'Delete All users'} );
     })
     .post('/clear', function(req, res, next) {
         // Callbacks

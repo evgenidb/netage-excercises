@@ -69,10 +69,10 @@ var setup = function(options) {
     app.use(function(req, res, next) {
         req.getRoot = function() {
             return req.protocol + "://" + req.get('host');
-        }
+        };
         req.getRestUrl = function() {
             return req.baseUrl + req.url;
-        }
+        };
         return next();
     });
 

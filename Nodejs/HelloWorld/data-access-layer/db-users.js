@@ -97,4 +97,4 @@ UsersDb.prototype.clear = function(onError, onComplete) {
 
 module.exports = function (db) {
     return new UsersDb(db);
-}
+};
