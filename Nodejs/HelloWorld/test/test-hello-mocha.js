@@ -1,4 +1,6 @@
 var assert = require("assert")
+chai.should()
+
 describe('Hello Mocha - sample tests to see if Mocha runs', function(){
     describe('Array', function(){
       describe('#indexOf()', function(){

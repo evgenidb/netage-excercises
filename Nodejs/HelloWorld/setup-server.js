@@ -1,22 +1,32 @@
 var setup = function(options) {
     // HANDLE OPTIONS
     // Db url
-    var dbProtocol = options.dbProtocol || '';
 
-    var dbBaseUrl = options.dbBaseUrl || '';
+    var dbOptions = null;
+    if ( 'db' in options ) {
+        dbOptions = options.db;
+    } else {
+        throw new Error('No DB parameters are passed');
+    }
+
+    var dbProtocol = dbOptions.dbProtocol || '';
+
+    var dbBaseUrl = dbOptions.dbBaseUrl || '';
     if (dbBaseUrl === '') {
         throw new Error('No dbBaseUrl passed');
     }
 
-    var dbPort = options.dbPort || '';
+    var dbPort = dbOptions.dbPort || '';
     dbPort = parseInt(dbPort, 10);
 
-    var dbUrlPath = options.dbUrlPath || '';
+    var dbUrlPath = dbOptions.dbUrlPath || '';
 
-    var dbName = options.dbName || '';
+    var dbName = dbOptions.dbName || '';
     if (dbName === '') {
         throw new Error('No dbName passed');
     }
+
+    var globalizeDb = dbOptions.globalizeDb ? dbOptions.globalizeDb : false;
 
     var dbUrl =
         ( dbProtocol === ''? '' : dbProtocol + '://' ) +
@@ -44,7 +54,20 @@ var setup = function(options) {
     var routes = require('./routes/index');
     var users = require('./routes/users');
 
-    var app = express();
+    var app = options.app || express();
+
+    // Custom Require
+
+    GLOBAL.rootRequire = function rootRequire(name) {
+        return require(__dirname + '/' + name);
+    };
+    GLOBAL.publicRequire = function publicRequire(name) {
+        return require(__dirname + '/public/' + name);
+    };
+
+    GLOBAL.testRequire = function testRequire(name) {
+        return require(__dirname + '/test/' + name);
+    };
 
     // view engine setup
     app.set('views', path.join(__dirname, 'views'));
@@ -64,6 +87,13 @@ var setup = function(options) {
         req.databases = Databases(db);
         next();
     });
+
+    if (globalizeDb) {
+        GLOBAL.DATABASE_OBJECT = {
+            db: db,
+            databases: Databases(db),
+        };
+    }
 
     // Additional functionality for request object
     app.use(function(req, res, next) {
@@ -98,6 +128,8 @@ var setup = function(options) {
         });
     });
 
+    console.log('Express server is ready');
+
     return app;
 };
 
@@ -105,5 +137,8 @@ var setup = function(options) {
 module.exports = function setup_server(options) {
     options = options || {};
     var app = setup(options);
+    GLOBAL.appData = {
+        app: app
+    };
     return app;
 };

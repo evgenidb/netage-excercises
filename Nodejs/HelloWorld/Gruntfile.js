@@ -92,7 +92,7 @@ module.exports = function(grunt) {
                 },
                 src: ['test/**/*.js'],
             },
-            jsApp: [ '**/*.js', '!**/node_modules/**', '!**/public/**' ],
+            jsApp: [ '**/*.js', '!node_modules/**', '!public/**', '!test/**/*.js', '!bin/**', ],
             jsFrontEnd: [ '**/public/javascripts/**/*.js' ],
             afterconcat: [ 'public/build/js/**/*.js' ]
         },
@@ -115,46 +115,153 @@ module.exports = function(grunt) {
                 fallback: function() {
                     console.log('Error: Cannot start the express server.');
                 },
-                output: "^(?!Error).+$",
+                output: 'Express server is ready',
+                port: 3000,
             },
             dev: {
                 options: {
-                    script: 'app-dev.js',
+                    //script: 'app-dev.js',
+                    script: 'bin/www-dev.js',
                     node_env: 'development',
+
+                    // Setting to `false` will effectively just run `node path/to/server.js`
+                    background: false,
+
+                    debug: true,
                 }
             },
             test: {
                 options: {
-                    script: 'app-dev-test.js',
+                    //script: 'app-dev-test.js',
+                    script: 'bin/www-dev-test.js',
                     node_env: 'test',
+
+                    // Setting to `false` will effectively just run `node path/to/server.js`
+                    background: true,
+
+                    debug: true,
                 }
             },
             testServer: {
                 options: {
-                    script: 'app-test-server.js',
+                    //script: 'app-test-server.js',
+                    script: 'bin/www-test-server.js',
                     node_env: 'production',
+
+                    // Setting to `false` will effectively just run `node path/to/server.js`
                     background: false,
+
+                    debug: true,
                 }
             },
             prod: {
                 options: {
-                    script: 'app-prod-server.js',
+                    //script: 'app-prod-server.js',
+                    script: 'bin/www-prod-server.js',
                     node_env: 'production',
+
+                    // Setting to `false` will effectively just run `node path/to/server.js`
                     background: false,
+
+                    debug: false,
                 }
             },
         },
         mochacli: {
             options: {
-                require: ['chai'],
-                files: 'test/*.js'
+                require: ['chai', 'test/chai-init.js'],
+                files: 'test/test-*.js',
+                force: true,
+                timeout: '5000',
             },
             spec: {
                 options: {
+                    ui: 'bdd',
                     reporter: 'spec'
                 }
             },
-        }
+        },
+        parallel: {
+            runLint: {
+                options: {
+                    stream: false,
+                },
+                tasks: [
+                    {
+                        grunt: true,
+                        args: ['jsonlint:all'],
+                    },
+                    {
+                        grunt: true,
+                        args: ['csslint'],
+                    },
+                    {
+                        grunt: true,
+                        args: ['jshint:all'],
+                    },
+                ],
+            },
+            runDev: {
+                options: {
+                    stream: true
+                },
+                tasks: [
+                    {
+                        grunt: true,
+                        args: ['express:dev'],
+                    },
+                    {
+                        grunt: true,
+                        args: ['watch'],
+                    },
+                ],
+            },
+            runDevTest: {
+                options: {
+                    stream: true
+                },
+                tasks: [
+                    {
+                        grunt: true,
+                        args: ['express:test'],
+                    },
+                    {
+                        grunt: true,
+                        args: ['watch'],
+                    },
+                ],
+            },
+            runProd: {
+                options: {
+                    stream: true
+                },
+                tasks: [
+                    {
+                        grunt: true,
+                        args: ['express:prod'],
+                    },
+                    {
+                        grunt: true,
+                        args: ['watch'],
+                    },
+                ],
+            },
+            runProdTest: {
+                options: {
+                    stream: true
+                },
+                tasks: [
+                    {
+                        grunt: true,
+                        args: ['express:testServer'],
+                    },
+                    {
+                        grunt: true,
+                        args: ['watch'],
+                    },
+                ],
+            },
+        },
     });
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -169,49 +276,47 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-express-server');
 
+    grunt.loadNpmTasks('grunt-parallel');
+
     // Default Task
     grunt.registerTask('default', [
-        'jsonlint:all',
-        'jshint:all',
+        'parallel:runLint',
         'express:test',
         'mochacli',
         'express:test:stop',
         'concat',
         'uglify',
-        'watch',
-        'express:dev',
+        'parallel:runLint',
+        'parallel:runDev',
     ]);
 
     // Allias Tasks
     grunt.registerTask('dev', [
-        'jsonlint:all',
-        'jshint:all',
-        'watch',
-        'express:dev',
+        'parallel:runLint',
+        'parallel:runDev',
     ]);
 
     grunt.registerTask('test', [
-        'jsonlint:all',
-        'jshint:all',
+        'parallel:runLint',
         'express:test',
         'mochacli',
         'express:test:stop',
     ]);
 
     grunt.registerTask('testServer', [
-        'jsonlint:all',
-        'jshint:all',
+        'parallel:runLint',
         'concat',
         'uglify',
+        'parallel:runLint',
         'express:testServer',
         'mochacli',
     ]);
 
     grunt.registerTask('prod', [
-        'jsonlint:all',
-        'jshint:all',
+        'parallel:runLint',
         'concat',
         'uglify',
+        'parallel:runLint',
         'express:prod',
     ]);
 };

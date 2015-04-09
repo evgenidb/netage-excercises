@@ -13,20 +13,15 @@ UsersDb.prototype = function() {};
  * Gets all users
  * @returns {String, Array} Returns error message or list of users
  */
-UsersDb.prototype.all = function all(onError, onComplete) {
+UsersDb.prototype.all = function all() {
     var collection = this.db.get(this.db_name);
-    collection
+    var promise = collection
         .find(
             {},
-            {},
-            function(err, records) {
-                if (err) {
-                    onError(err);
-                } else {
-                    onComplete(records);
-                }
-            }
+            {sort: {id: 1}}
         );
+
+    return promise;
 };
 
 
@@ -36,23 +31,19 @@ UsersDb.prototype.all = function all(onError, onComplete) {
  * @param   {String} name The name of the user
  * @returns {String} A message of whether the deletion succeeded or not
  */
-UsersDb.prototype.add = function add(id, name, onError, onComplete) {
+UsersDb.prototype.add = function add(id, name) {
+    id = parseInt(id, 10);
+
     var collection = this.db.get(this.db_name);
     var result = '';
-    collection
+    var promise = collection
         .insert(
             {
                 'id': id,
                 'name': name
-            },
-            function(err, records) {
-                if (err) {
-                    onError(err);
-                } else {
-                    onComplete(records);
-                }
-            }
-        );
+            });
+
+    return promise;
 };
 
 /**
@@ -60,39 +51,31 @@ UsersDb.prototype.add = function add(id, name, onError, onComplete) {
  * @param   {String} id Id of the user
  * @returns {String} A message of whether the deletion succeeded or not
  */
-UsersDb.prototype.delete = function(id, onError, onComplete) {
+UsersDb.prototype.delete = function(id) {
+    id = parseInt(id, 10);
+
     var collection = this.db.get(this.db_name);
-    collection
+    var promise = collection
         .remove(
             {
                 'id': id
-            },
-            function(err, records) {
-                if (err) {
-                    onError(err);
-                } else {
-                    onComplete(records);
-                }
             }
         );
+
+    return promise;
 };
 
 /**Deletes all users from the DB
  * @returns {String} Message of whether the deletion succeeded or not
  */
-UsersDb.prototype.clear = function(onError, onComplete) {
+UsersDb.prototype.clear = function() {
     var collection = this.db.get(this.db_name);
-    collection
+    var promise = collection
         .remove(
-            {},
-            function(err, records) {
-                if (err) {
-                    onError(err);
-                } else {
-                    onComplete(records);
-                }
-            }
+            {}
         );
+
+    return promise;
 };
 
 module.exports = function (db) {
