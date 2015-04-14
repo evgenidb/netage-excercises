@@ -319,4 +319,8 @@ module.exports = function(grunt) {
         'parallel:runLint',
         'express:prod',
     ]);
+
+    grunt.registerTask('lint', [
+        'parallel:runLint'
+    ]);
 };
